@@ -30,16 +30,11 @@ export default class UserController {
         try {
             const userId = Number(req.params.id);
             const updatedBy = req.user.id;
-            if (userId != req.user.id) {
-                return res.status(401).json({
-                    success: false,
-                    message: "unauthorized update data",
-                })
-            }
             const user = await this.updateUserUseCase.execute({
                 userId: userId,
                 updated: req.body,
-                updatedBy: updatedBy
+                updatedBy: updatedBy,
+                requester: req.user
             });
             res.status(200).json({
                 success: true,
@@ -58,13 +53,13 @@ export default class UserController {
         try {
             const userId = Number(req.params.id);
             const deletedBy = req.user.id;
-            if (id == req.user.id) {
+            if (userId == req.user.id) {
                 return res.status(401).json({
                     success: false,
                     message: "unauthorized delete data",
                 })
             }
-
+            
             await this.deleteUserUseCase.execute({ userId, deletedBy });
             res.status(204).json({
                 success: true,
