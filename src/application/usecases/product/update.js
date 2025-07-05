@@ -1,6 +1,7 @@
 export default class UpdateProduct {
-    constructor (productRepository) {
+    constructor(productRepository,redisClient){
         this.productRepository = productRepository;
+        this.redisClient = redisClient;
     }
 
     async execute({productId, updated, updatedBy}) {
@@ -10,6 +11,7 @@ export default class UpdateProduct {
         }
 
         const updatedProduct = await this.productRepository.update(productId, updated, updatedBy);
+        await this.redisClient.del('products:all')
         return updatedProduct;
     }
 }

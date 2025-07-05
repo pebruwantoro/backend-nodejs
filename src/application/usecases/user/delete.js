@@ -1,6 +1,7 @@
 export default class DeleteUser {
-    constructor(userRepository){
+    constructor(userRepository, redisClient){
         this.userRepository = userRepository;
+        this.redisClient = redisClient;
     }
 
     async execute({userId, deletedBy}) {
@@ -10,6 +11,7 @@ export default class DeleteUser {
         }
 
         const success = await this.userRepository.delete(userId, deletedBy);
+        await this.redisClient.del('users:all');
         return success;
     }
 }

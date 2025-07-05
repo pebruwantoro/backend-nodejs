@@ -1,6 +1,7 @@
 export default class DeleteProduct {
-    constructor(productRepository){
+    constructor(productRepository, redisClient){
         this.productRepository = productRepository;
+        this.redisClient = redisClient;
     }
 
     async execute({productId, deletedBy}) {
@@ -10,6 +11,7 @@ export default class DeleteProduct {
         }
 
         const success = await this.productRepository.delete(productId, deletedBy);
+        await this.redisClient.del('products:all')
         return success;
     }
 }

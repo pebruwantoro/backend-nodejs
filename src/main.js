@@ -14,6 +14,8 @@ import ProductController from './application/controllers/productController.js'
 import UserRouter from './routes/userRoutes.js';
 import ProductRouter from './routes/productRouters.js';
 
+import redisClient from './redis/redis.js';
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -22,17 +24,17 @@ const userRepository = new DatabaseUserRepository();
 const productRepository = new DatabaseProductRepository();
 
 const createUserUseCase = new CreateUser(userRepository);
-const updateUserUseCase = new UpdateUser(userRepository);
-const deleteUserUseCase = new DeleteUser(userRepository);
+const updateUserUseCase = new UpdateUser(userRepository, redisClient);
+const deleteUserUseCase = new DeleteUser(userRepository, redisClient);
 const detailUserUseCase = new DetailUser(userRepository);
-const listUsersUseCase = new ListUsers(userRepository);
+const listUsersUseCase = new ListUsers(userRepository, redisClient);
 const loginUserUseCase = new LoginUser(userRepository);
 
 const createProductUseCase = new CreateProduct(productRepository, userRepository);
-const updateProductUseCase = new UpdateProduct(productRepository);
-const deleteProductUseCase = new DeleteProduct(productRepository);
+const updateProductUseCase = new UpdateProduct(productRepository, redisClient);
+const deleteProductUseCase = new DeleteProduct(productRepository, redisClient);
 const detailProductUseCase = new DetailProduct(productRepository);
-const listProductsUseCase = new ListProducts(productRepository);
+const listProductsUseCase = new ListProducts(productRepository, redisClient);
 
 const userController = new UserController(
     createUserUseCase,

@@ -1,8 +1,9 @@
 import { UserRole } from "../../../domain/enums/userRole.js";
 
 export default class UpdateUser {
-    constructor (userRepository) {
+    constructor(userRepository, redisClient){
         this.userRepository = userRepository;
+        this.redisClient = redisClient;
     }
 
     async execute({userId, updated, updatedBy, requester}) {
@@ -27,6 +28,7 @@ export default class UpdateUser {
         }
 
         const updatedUser = await this.userRepository.update(userId, updated, updatedBy);
+        await this.redisClient.del('users:all');
         return updatedUser;
     }
 }
