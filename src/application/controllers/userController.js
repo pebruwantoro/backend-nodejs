@@ -26,6 +26,23 @@ export default class UserController {
         }
     }
 
+    async registerUser(req, res) {
+        try {
+            const data = req.body;
+            const user = await this.createUserUseCase.execute(data);
+            res.status(201).json({
+                success: true,
+                message: "success register user",
+                data: user.id,
+            });
+        } catch(error) {
+            res.status(400).json({
+                success: false,
+                message: error.message,
+            });
+        }
+    }
+
     async updateUser(req, res) {
         try {
             const userId = Number(req.params.id);
@@ -103,6 +120,22 @@ export default class UserController {
             return res.status(200).json({
                 success: true,
                 message: "success get user detail",
+                data: user,
+            });
+        } catch (error){
+            return res.status(404).json({
+                success: false,
+                message: error.message,
+            });
+        }
+    }
+
+    async getProfile(req, res){
+        try {
+            const user = await this.detailUserUseCase.execute({userId: Number(req.user.id)});
+            return res.status(200).json({
+                success: true,
+                message: "success get user profile",
                 data: user,
             });
         } catch (error){
